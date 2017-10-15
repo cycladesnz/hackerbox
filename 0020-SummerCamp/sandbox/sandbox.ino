@@ -100,6 +100,7 @@ void wifiScan2LCD()
       tft.println(". . .");
       displaylines--;
     }
+    
     for (int i = 0; i < netsfound; ++i) 
     {
       if (WiFi.SSID(i).startsWith("HackerBoxer"))
@@ -113,16 +114,35 @@ void wifiScan2LCD()
       else
       {
         // Print SSID and RSSI for each network found
-        tft.print(" [");
-        tft.print(WiFi.RSSI(i));
-        tft.print("] ");
-        tft.print(WiFi.SSID(i).substring(0,17));
-        tft.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
+        tft.println(" " + WiFi.RSSI(i));
+        tft.println(" " + WiFi.SSID(i).substring(0,17));
+        //tft.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
+        tft.println(" " + returnEncryption(i));
+        tft.println();
         delay(50);
         displaylines--;
       }
     }
     delay(700); // Wait before scanning again
+  }
+}
+
+String returnEncryption(int ntwk)
+{
+  wifi_auth_mode_t et = WiFi.encryptionType(ntwk);
+  switch (et) {
+    case (WIFI_AUTH_OPEN):
+      return "Open";
+    case (WIFI_AUTH_WEP):
+      return "WEP";
+    case (WIFI_AUTH_WPA_PSK):
+      return "WPA_PSK";
+    case (WIFI_AUTH_WPA2_PSK):
+      return "WPA2_PSK";
+    case (WIFI_AUTH_WPA_WPA2_PSK):
+      return "WPA_WPA2_PSK";
+    case (WIFI_AUTH_WPA2_ENTERPRISE):
+      return "WPA2_ENTERPRISE";
   }
 }
 
